@@ -1,0 +1,14 @@
+{
+  "entity": {
+    "sensor": {
+      "findings": {
+        "default": "mdi:robot-confused-outline"
+      }
+    }
+  },
+  "services": {
+    "run": {
+      "service": "mdi:magnify-scan"
+    }
+  }
+}

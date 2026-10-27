@@ -1,0 +1,69 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Automationscheck",
+        "description": "Checks your automations and scripts for loops, conflicting automations and broken trigger IDs. Findings appear under Settings → Repairs. Nothing is changed."
+      }
+    },
+    "abort": {
+      "already_configured": "Automationscheck is already set up.",
+      "single_instance_allowed": "Automationscheck is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Adjust Automationscheck",
+        "data": {
+          "show_notes": "Also show notes as repairs",
+          "include_disabled": "Also check disabled automations"
+        },
+        "data_description": {
+          "show_notes": "Notes are possible but uncertain problems, e.g. loops that depend on values only known at runtime.",
+          "include_disabled": "Disabled automations do not run, so they cannot cause conflicts."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "findings": {
+        "name": "Findings"
+      }
+    }
+  },
+  "services": {
+    "run": {
+      "name": "Check now",
+      "description": "Checks all automations and scripts right away and returns the findings."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Automationscheck is not set up or not loaded."
+    }
+  },
+  "issues": {
+    "conflict": {
+      "title": "Conflict: {automation_a} and {automation_b}",
+      "description": "**{automation_a}** sets `{entity}` to **{value_a}** while **{automation_b}** sets it to **{value_b}** at the same moment.\n\nShared trigger: {trigger}\nSituation: {situation}\n\nWhich one wins depends on timing. Add a condition so only one of them acts in this situation, or merge the logic into one automation."
+    },
+    "loop": {
+      "title": "Loop: {automations}",
+      "description": "These automations can keep triggering each other:\n\n{lines}\n\nCheck whether a condition breaks the chain – for example, only act when the target state is not reached yet."
+    },
+    "self_trigger": {
+      "title": "Self-trigger: {automation}",
+      "description": "**{automation}** changes an entity it listens to itself and can therefore trigger again:\n\n{lines}\n\nA condition such as \"only if the state is not already correct\" or a `to:` in the trigger prevents the repetition."
+    },
+    "unknown_trigger_id": {
+      "title": "Unknown trigger ID in {automation}",
+      "description": "A condition in **{automation}** checks the trigger ID **{ids}**, which does not exist there (defined: {defined}). That branch will never run.\n\nFix the ID in the trigger or in the condition."
+    },
+    "idle_trigger": {
+      "title": "Trigger without effect in {automation}",
+      "description": "**{automation}** starts on these triggers, but no branch reacts to them: **{ids}**.\n\nRemove the triggers or add a matching branch."
+    }
+  }
+}

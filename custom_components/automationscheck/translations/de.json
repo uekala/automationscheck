@@ -1,0 +1,69 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Automationscheck einrichten",
+        "description": "Prüft deine Automationen und Skripte auf Schleifen, Gegenspieler und fehlerhafte Trigger-IDs. Befunde erscheinen unter Einstellungen → Reparaturen. Es wird nichts verändert."
+      }
+    },
+    "abort": {
+      "already_configured": "Automationscheck ist bereits eingerichtet.",
+      "single_instance_allowed": "Automationscheck ist bereits eingerichtet."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Automationscheck anpassen",
+        "data": {
+          "show_notes": "Auch Hinweise als Reparatur anzeigen",
+          "include_disabled": "Deaktivierte Automationen mitprüfen"
+        },
+        "data_description": {
+          "show_notes": "Hinweise sind mögliche, aber nicht sichere Probleme, z. B. Schleifen, die von Werten abhängen, die erst zur Laufzeit feststehen.",
+          "include_disabled": "Ausgeschaltete Automationen laufen nicht und können daher auch keine Konflikte auslösen."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "findings": {
+        "name": "Befunde"
+      }
+    }
+  },
+  "services": {
+    "run": {
+      "name": "Jetzt prüfen",
+      "description": "Prüft alle Automationen und Skripte sofort und liefert die Befunde zurück."
+    }
+  },
+  "exceptions": {
+    "not_loaded": {
+      "message": "Automationscheck ist nicht eingerichtet oder nicht geladen."
+    }
+  },
+  "issues": {
+    "conflict": {
+      "title": "Gegenspieler: {automation_a} und {automation_b}",
+      "description": "**{automation_a}** setzt `{entity}` auf **{value_a}**, **{automation_b}** im selben Moment auf **{value_b}**.\n\nGemeinsamer Auslöser: {trigger}\nSituation: {situation}\n\nWelche Aktion gewinnt, hängt von der Reihenfolge ab. Ergänze eine Bedingung, damit in dieser Situation nur eine der beiden handelt, oder lege die Logik in einer Automation zusammen."
+    },
+    "loop": {
+      "title": "Schleife: {automations}",
+      "description": "Diese Automationen können sich gegenseitig immer wieder auslösen:\n\n{lines}\n\nPrüfe, ob eine Bedingung die Kette unterbricht – zum Beispiel nur handeln, wenn der Zielzustand noch nicht erreicht ist."
+    },
+    "self_trigger": {
+      "title": "Selbstauslösung: {automation}",
+      "description": "**{automation}** verändert eine Entität, auf die sie selbst lauscht, und kann sich dadurch erneut auslösen:\n\n{lines}\n\nEine Bedingung wie „nur wenn der Zustand noch nicht stimmt“ oder ein `to:` im Auslöser verhindert die Wiederholung."
+    },
+    "unknown_trigger_id": {
+      "title": "Unbekannte Trigger-ID in {automation}",
+      "description": "Eine Bedingung in **{automation}** prüft die Trigger-ID **{ids}**, die es dort nicht gibt (vorhanden: {defined}). Der zugehörige Zweig wird nie ausgeführt.\n\nPasse die ID im Auslöser oder in der Bedingung an."
+    },
+    "idle_trigger": {
+      "title": "Auslöser ohne Wirkung in {automation}",
+      "description": "**{automation}** startet bei diesen Auslösern, aber kein Zweig reagiert darauf: **{ids}**.\n\nEntferne die Auslöser oder ergänze einen passenden Zweig."
+    }
+  }
+}
