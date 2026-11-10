@@ -114,7 +114,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("exports", nargs="+", type=Path)
     parser.add_argument("--options", type=Path, help="JSON {entity_id: [Optionen]}")
     args = parser.parse_args(argv)
-    print(render(load_units(args.exports), load_domains(args.options)))
+    try:
+        units = load_units(args.exports)
+        domains = load_domains(args.options)
+    except OSError as err:
+        parser.error(f"Datei nicht lesbar: {err.filename or err}")
+    except (json.JSONDecodeError, UnicodeDecodeError) as err:
+        parser.error(f"Kein gültiges JSON: {err}")
+    print(render(units, domains))
     return 0
 
 
