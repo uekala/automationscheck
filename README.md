@@ -74,6 +74,12 @@ cd custom_components/automationscheck
 python -m engine.cli export.json --options optionen.json
 ```
 
+### Release
+
+1. Änderungen im Abschnitt „Unveröffentlicht“ von [`CHANGELOG.md`](CHANGELOG.md) unter einer neuen Versionsüberschrift `## x.y.z – Datum` zusammenfassen.
+2. Dieselbe Version in `custom_components/automationscheck/manifest.json` eintragen; `python tools/check_versions.py` prüft, dass beide übereinstimmen.
+3. Nach grüner CI auf `main` einen Tag `vx.y.z` und ein GitHub-Release mit dem Changelog-Abschnitt anlegen. HACS bietet das Update danach an.
+
 ---
 
 ## English
