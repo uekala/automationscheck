@@ -4,6 +4,12 @@ Findet in Home Assistant Automationen, die sich **gegenseitig in die Quere komme
 
 Automationscheck liest deine Automationen und Skripte, baut daraus ein Netz aus Auslösern und Aktionen und meldet Auffälligkeiten unter **Einstellungen → Reparaturen**. Es verändert nichts.
 
+<img src="docs/reparaturen.png" alt="Einstellungen → Reparaturen mit drei Befunden von Automationscheck: unbekannte Trigger-ID, Gegenspieler und Schleife" width="640">
+
+<img src="docs/gegenspieler.png" alt="Ein Befund im Detail: zwei Automationen stellen beim Sonnenuntergang dasselbe Rollo gleichzeitig auf und zu" width="520">
+
+<sub>Aufgenommen mit Home Assistant 2026.11 und erfundenen Beispiel-Automationen.</sub>
+
 ## Was es findet
 
 | Befund | Beispiel |
