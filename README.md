@@ -88,10 +88,6 @@ python -m engine.cli export.json --options optionen.json
 
 ---
 
-## English
-
-Automationscheck analyses your Home Assistant automations and scripts and reports **conflicting automations** (same trigger, opposite actions on the same entity), **loops**, **self-triggering automations**, **unknown trigger IDs** and **triggers without effect** as repairs. It reasons about conditions, trigger values (`to`/`from`), input_select options, delays, scripts and blueprints to keep false positives low. Nothing in your setup is changed. Install via HACS as a custom repository, then add the integration in Settings → Devices & services.
-
 ## Lizenz
 
 MIT – siehe [LICENSE](LICENSE).
