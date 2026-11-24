@@ -6,6 +6,16 @@ Alle nennenswerten Änderungen an Automationscheck. Versionen folgen [Semantic V
 
 ### Geändert
 
+- README: Installation über den Marketplace beschrieben, der ab Home Assistant 2026.11 HACS ersetzt.
+
+### Tests
+
+- Die Tests laufen in der CI zusätzlich mit Python 3.14 gegen das aktuelle Home Assistant, bisher nur gegen Home Assistant 2026.2.
+
+## 0.1.1 – 2026-11-24
+
+### Geändert
+
 - Bei Gegenspielern nennt der gemeinsame Auslöser jetzt auch die Art eines zweckgebundenen Auslösers, z. B. `light.flur` (light.turned_on).
 
 ### Behoben
