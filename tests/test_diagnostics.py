@@ -107,3 +107,27 @@ async def test_unreadable_automations_are_listed_as_skipped(hass: HomeAssistant)
     assert result.skipped == ["Licht Bad"]
     state = hass.states.get("sensor.automationscheck_findings")
     assert state.attributes["skipped"] == ["Licht Bad"]
+
+
+async def test_automation_the_analysis_cannot_read_is_skipped(
+    hass: HomeAssistant, monkeypatch
+) -> None:
+    """Eine unbekannte Schreibweise lässt nur diese Automation aus, nicht die ganze Prüfung."""
+    from custom_components.automationscheck import checker
+
+    original = checker.build_unit
+
+    def build_unit(entity_id, name, kind, config):
+        if entity_id == "automation.licht_bad":
+            raise ValueError("unbekannte Schreibweise")
+        return original(entity_id, name, kind, config)
+
+    monkeypatch.setattr(checker, "build_unit", build_unit)
+    entry = await _setup(hass, [BROKEN_ID, TOGGLE])
+
+    result = entry.runtime_data.result
+    assert result.checked == 1
+    assert result.skipped == ["Licht Bad"]
+    state = hass.states.get("sensor.automationscheck_findings")
+    assert state.state == "0"
+    assert state.attributes["skipped"] == ["Licht Bad"]

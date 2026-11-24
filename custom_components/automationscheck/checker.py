@@ -171,7 +171,11 @@ class AutomationsCheck:
                     if config is None:
                         skipped.append(name)
                         continue
-                units[entity.entity_id] = build_unit(entity.entity_id, name, kind, config)
+                try:
+                    units[entity.entity_id] = build_unit(entity.entity_id, name, kind, config)
+                except Exception as err:  # unbekannte Schreibweise: auslassen statt abbrechen
+                    _LOGGER.debug("%s nicht prüfbar: %s", name, err)
+                    skipped.append(name)
         inline_scripts(units)
 
         domains: dict[str, frozenset[str]] = {}
