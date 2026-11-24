@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install -r requirements_test.txt ruff
-      - name: Check Home Assistant integration version metadata
+      - name: Version in manifest.json und CHANGELOG.md abgleichen
         run: python tools/check_versions.py
       - run: ruff check . && ruff format --check .
       - run: pytest -q

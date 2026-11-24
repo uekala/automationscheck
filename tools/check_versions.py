@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the published Home Assistant integration version metadata."""
+"""Prüft, ob die Version in manifest.json zur ersten Version in CHANGELOG.md passt."""
 
 from __future__ import annotations
 
@@ -12,11 +12,11 @@ manifest_path = ROOT / "custom_components" / "automationscheck" / "manifest.json
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
 if manifest.get("domain") != "automationscheck":
-    raise SystemExit("manifest domain must be 'automationscheck'")
+    raise SystemExit("manifest.json: domain muss 'automationscheck' sein")
 
 version = manifest.get("version")
 if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
-    raise SystemExit(f"Invalid Home Assistant manifest version: {version!r}")
+    raise SystemExit(f"manifest.json: ungültige Version {version!r}, erwartet x.y.z")
 
 changelog_path = ROOT / "CHANGELOG.md"
 if changelog_path.exists():
@@ -26,7 +26,7 @@ if changelog_path.exists():
         re.MULTILINE,
     )
     if not headings or headings[0] != version:
-        actual = headings[0] if headings else "no version heading"
-        raise SystemExit(f"CHANGELOG.md starts at {actual}, manifest version is {version}")
+        actual = headings[0] if headings else "keine Versionsüberschrift"
+        raise SystemExit(f"CHANGELOG.md beginnt mit {actual}, manifest.json hat Version {version}")
 
-print(f"Automationscheck manifest version {version} is valid.")
+print(f"Version {version} in manifest.json und CHANGELOG.md stimmt überein.")
