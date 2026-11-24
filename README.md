@@ -74,6 +74,7 @@ Updates erscheinen danach unter Einstellungen → **Updates**.
 - Ziele, die erst zur Laufzeit per Template entstehen (`entity_id: "{{ … }}"`), lassen sich nicht vorhersagen. Ausnahme: `{{ trigger.entity_id }}` wird aufgelöst.
 - Ziele über Bereiche, Geräte oder Labels werden noch nicht aufgelöst.
 - Template-Bedingungen gelten als „unbekannt“ und schränken daher nichts ein.
+- Verschiedene zweckgebundene Auslöser auf derselben Entität (z. B. `light.turned_on` und `light.brightness_changed`) gelten als nicht gleichzeitig. Gegenspieler zwischen ihnen werden daher nicht gemeldet.
 - Szenen werden noch nicht berücksichtigt.
 
 Ein Befund ist ein Hinweis zum Prüfen, kein Urteil: Manchmal ist ein Gegenspieler gewollt. Reparaturen lassen sich dann einfach **ignorieren**.
