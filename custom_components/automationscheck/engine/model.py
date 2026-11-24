@@ -196,7 +196,9 @@ def parse_triggers(raw_triggers: Any) -> list[Trigger]:
         entities = [e for e in as_list(raw.get("entity_id")) if isinstance(e, str)]
         target = raw.get("target") if isinstance(raw.get("target"), dict) else {}
         entities += [e for e in as_list(target.get("entity_id")) if isinstance(e, str)]
-        for_key = _duration_key(raw.get("for"))
+        # Zweckgebundene Auslöser tragen die Dauer unter `options:`
+        options = raw.get("options") if isinstance(raw.get("options"), dict) else {}
+        for_key = _duration_key(raw.get("for") or options.get("for"))
         if kind == "state":
             for entity in entities:
                 result.append(
@@ -242,7 +244,9 @@ def parse_triggers(raw_triggers: Any) -> list[Trigger]:
         elif "." in kind and entities:
             # Zweckgebundene Auslöser (z. B. motion.detected) mit Ziel-Entitäten
             for entity in entities:
-                result.append(Trigger("state", entity, trigger_id=trigger_id, key=kind))
+                result.append(
+                    Trigger("state", entity, trigger_id=trigger_id, key=kind, for_key=for_key)
+                )
         else:
             key = kind if kind in ("time_pattern", "webhook", "mqtt", "device", "zone") else None
             result.append(Trigger("other", key=key, trigger_id=trigger_id))

@@ -4,8 +4,13 @@ Alle nennenswerten Änderungen an Automationscheck. Versionen folgen [Semantic V
 
 ## Unveröffentlicht
 
+### Geändert
+
+- Bei Gegenspielern nennt der gemeinsame Auslöser jetzt auch die Art eines zweckgebundenen Auslösers, z. B. `light.flur` (light.turned_on).
+
 ### Behoben
 
+- Zweckgebundene Auslöser wie `light.turned_on` und `light.turned_off` auf derselben Entität galten als gleichzeitig. Das ergab falsche Gegenspieler, etwa wenn eine Automation beim Einschalten und eine andere beim Ausschalten handelt. Auch ihre Dauer unter `options:` wird jetzt berücksichtigt.
 - Eine Vorlage in der Dauer eines Auslösers (z. B. `for: {minutes: "{{ … }}"}`) hat die ganze Prüfung abgebrochen. Solche Automationen werden jetzt normal geprüft.
 - Dauern (`for:`) werden wie in Home Assistant gelesen: `"00:05"` sind 5 Minuten, und `00:00:00` zählt wie keine Dauer. Gegenspieler mit gleicher Dauer in unterschiedlicher Schreibweise werden dadurch erkannt.
 - Kommandozeile: Eine fehlende oder unlesbare Datei und ungültiges JSON ergeben jetzt eine klare Fehlermeldung (Exit-Code 2) statt eines Python-Tracebacks.

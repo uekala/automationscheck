@@ -253,6 +253,53 @@ def test_two_part_duration_means_hours_and_minutes():
     assert analyse(units(five_minutes, _waiting("00:00:05", "light.turn_off"))) == []
 
 
+def _purpose(trigger, action, **options):
+    """Zweckgebundener Auslöser (z. B. light.turned_on) mit Ziel und Optionen."""
+    config = {"trigger": trigger, "target": {"entity_id": "light.flur"}}
+    if options:
+        config["options"] = options
+    return {
+        "triggers": [config],
+        "actions": [{"action": action, "target": {"entity_id": "fan.bad"}}],
+    }
+
+
+def test_opposite_purpose_triggers_are_not_simultaneous():
+    on = _purpose("light.turned_on", "fan.turn_on", behavior="each")
+    off = _purpose("light.turned_off", "fan.turn_off", behavior="each")
+    assert analyse(units(on, off)) == []
+
+
+def test_purpose_trigger_duration_in_options_is_not_simultaneous():
+    on = _purpose("light.turned_on", "fan.turn_on")
+    later = _purpose("light.turned_on", "fan.turn_off", **{"for": {"minutes": 5}})
+    assert analyse(units(on, later)) == []
+
+
+def test_same_purpose_trigger_still_races():
+    on = _purpose("light.turned_on", "fan.turn_on", behavior="each")
+    off = _purpose("light.turned_on", "fan.turn_off", behavior="each")
+    findings = analyse(units(on, off))
+    assert kinds(findings) == [(WARNING, CONFLICT)]
+    assert "light.turned_on" in findings[0].placeholders["trigger"]
+
+
+def test_purpose_trigger_still_races_with_plain_state_trigger():
+    on = _purpose("light.turned_on", "fan.turn_on")
+    any_change = {
+        "triggers": [{"trigger": "state", "entity_id": "light.flur"}],
+        "actions": [{"action": "fan.turn_off", "target": {"entity_id": "fan.bad"}}],
+    }
+    assert kinds(analyse(units(on, any_change))) == [(WARNING, CONFLICT)]
+
+
+def test_purpose_trigger_with_zero_duration_still_races():
+    # Die Oberfläche speichert bei zweckgebundenen Auslösern `for: 00:00:00`
+    zero = _purpose("light.turned_on", "fan.turn_on", **{"for": {"hours": 0, "seconds": 0}})
+    plain = _purpose("light.turned_on", "fan.turn_off")
+    assert kinds(analyse(units(zero, plain))) == [(WARNING, CONFLICT)]
+
+
 def test_unknown_trigger_id_is_an_error():
     config = {
         "triggers": [{"trigger": "state", "entity_id": "binary_sensor.p", "to": "on", "id": "an"}],

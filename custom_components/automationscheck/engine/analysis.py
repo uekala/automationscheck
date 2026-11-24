@@ -196,6 +196,8 @@ def describe_trigger(trigger: Trigger) -> str:
     if trigger.entity is None:
         return f"{trigger.kind} {trigger.key or ''}".strip()
     text = f"`{trigger.entity}`"
+    if trigger.key:
+        text += f" ({trigger.key})"  # zweckgebundener Auslöser, z. B. light.turned_on
     if trigger.attribute:
         text += f" [{trigger.attribute}]"
     if trigger.from_ or trigger.to:
@@ -351,6 +353,8 @@ def _triggers_overlap(a: Trigger, b: Trigger) -> bool:
         return True
     if a.for_key != b.for_key:
         return False  # unterschiedliche Verzögerung: feuern nicht gleichzeitig
+    if a.key and b.key and a.key != b.key:
+        return False  # verschiedene zweckgebundene Auslöser, z. B. light.turned_on/_off
     if a.kind == "state" and b.kind == "state" and a.to and b.to:
         return bool(set(a.to) & set(b.to))
     return True
