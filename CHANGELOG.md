@@ -6,6 +6,8 @@ Alle nennenswerten Änderungen an Automationscheck. Versionen folgen [Semantic V
 
 ### Behoben
 
+- Eine Vorlage in der Dauer eines Auslösers (z. B. `for: {minutes: "{{ … }}"}`) hat die ganze Prüfung abgebrochen. Solche Automationen werden jetzt normal geprüft.
+- Dauern (`for:`) werden wie in Home Assistant gelesen: `"00:05"` sind 5 Minuten, und `00:00:00` zählt wie keine Dauer. Gegenspieler mit gleicher Dauer in unterschiedlicher Schreibweise werden dadurch erkannt.
 - Kommandozeile: Eine fehlende oder unlesbare Datei und ungültiges JSON ergeben jetzt eine klare Fehlermeldung (Exit-Code 2) statt eines Python-Tracebacks.
 
 ### Tests

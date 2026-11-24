@@ -153,23 +153,37 @@ def _str_tuple(value: Any) -> tuple[str, ...]:
 
 
 def _duration_key(value: Any) -> str | None:
-    """Normalisiert eine Dauer (`for:`) zu Sekunden, damit sie vergleichbar wird."""
+    """Normalisiert eine Dauer (`for:`) zu Sekunden, damit sie vergleichbar wird.
+
+    Eine Dauer von null zählt wie keine Dauer. Texte mit zwei Teilen bedeuten wie
+    in Home Assistant Stunden und Minuten (`"00:05"` = 5 Minuten). Vorlagen bleiben
+    als Text stehen und brechen die Prüfung nicht ab.
+    """
     if not value:
         return None
-    if isinstance(value, dict):
-        seconds = (
-            float(value.get("days", 0)) * 86400
-            + float(value.get("hours", 0)) * 3600
-            + float(value.get("minutes", 0)) * 60
-            + float(value.get("seconds", 0))
-        )
-        return f"{seconds:g}"
-    if isinstance(value, str) and not is_template(value):
-        parts = [float(p) for p in value.split(":")]
-        while len(parts) < 3:
-            parts.insert(0, 0.0)
-        return f"{parts[-3] * 3600 + parts[-2] * 60 + parts[-1]:g}"
-    return str(value)
+    try:
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            seconds = float(value)
+        elif isinstance(value, dict):
+            seconds = (
+                float(value.get("days", 0)) * 86400
+                + float(value.get("hours", 0)) * 3600
+                + float(value.get("minutes", 0)) * 60
+                + float(value.get("seconds", 0))
+                + float(value.get("milliseconds", 0)) / 1000
+            )
+        elif isinstance(value, str) and not is_template(value):
+            parts = [float(p) for p in value.split(":")]
+            if len(parts) == 2:
+                parts.append(0.0)
+            while len(parts) < 3:
+                parts.insert(0, 0.0)
+            seconds = parts[-3] * 3600 + parts[-2] * 60 + parts[-1]
+        else:
+            return str(value)
+    except (TypeError, ValueError):
+        return str(value)
+    return f"{seconds:g}" if seconds else None
 
 
 def parse_triggers(raw_triggers: Any) -> list[Trigger]:

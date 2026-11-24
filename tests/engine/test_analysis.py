@@ -219,6 +219,40 @@ def test_delayed_or_different_duration_is_not_simultaneous():
     assert analyse(units(on, waiting)) == []
 
 
+def _waiting(duration, action):
+    return {
+        "triggers": [
+            {"trigger": "state", "entity_id": "binary_sensor.p", "to": "on", "for": duration}
+        ],
+        "actions": [{"action": action, "target": {"entity_id": "light.bad"}}],
+    }
+
+
+def test_templated_duration_does_not_abort_the_check():
+    template = {"minutes": "{{ states('input_number.wartezeit') | int }}"}
+    unit = units(_waiting(template, "light.turn_on"))[0]
+    assert unit.triggers[0].for_key is not None
+    assert (
+        analyse(units(_waiting(template, "light.turn_on"), _waiting(None, "light.turn_off"))) == []
+    )
+
+
+def test_zero_duration_counts_as_simultaneous():
+    zero = _waiting("00:00:00", "light.turn_on")
+    assert kinds(analyse(units(zero, _waiting(None, "light.turn_off")))) == [(WARNING, CONFLICT)]
+
+
+def test_two_part_duration_means_hours_and_minutes():
+    five_minutes = _waiting("00:05", "light.turn_on")
+    assert kinds(analyse(units(five_minutes, _waiting("00:05:00", "light.turn_off")))) == [
+        (WARNING, CONFLICT)
+    ]
+    assert kinds(analyse(units(five_minutes, _waiting({"minutes": 5}, "light.turn_off")))) == [
+        (WARNING, CONFLICT)
+    ]
+    assert analyse(units(five_minutes, _waiting("00:00:05", "light.turn_off"))) == []
+
+
 def test_unknown_trigger_id_is_an_error():
     config = {
         "triggers": [{"trigger": "state", "entity_id": "binary_sensor.p", "to": "on", "id": "an"}],
