@@ -31,12 +31,25 @@ Automationscheck rechnet mit Zuständen statt nur Namen zu vergleichen:
 - **Skripte werden mitgedacht.** Was ein aufgerufenes Skript schaltet, zählt für die aufrufende Automation.
 - **Blueprints werden aufgelöst** und wie normale Automationen geprüft.
 
-## Installation über HACS
+## Installation
+
+Seit Home Assistant 2026.11 ersetzt der eingebaute **Marketplace** HACS. Wer Automationscheck schon über HACS installiert hat, muss nichts tun: Der Marketplace übernimmt es beim Update.
+
+### Über den Marketplace (ab Home Assistant 2026.11)
+
+1. Einstellungen → **Marketplace** → **Über Link hinzufügen**
+2. Als GitHub-Link `https://github.com/uekala/automationscheck` eintragen und **Hinzufügen** wählen. Beim ersten Mal fragt der Marketplace nach einer Verbindung zu GitHub.
+3. **Automationscheck** öffnen und **Installieren**. Meldet der Marketplace, dass ein Neustart nötig ist, Home Assistant neu starten.
+4. Einstellungen → Geräte & Dienste → **Integration hinzufügen** → Automationscheck
+
+### Über HACS (bis Home Assistant 2026.10)
 
 1. HACS → Integrationen → ⋮ → **Benutzerdefinierte Repositories**
 2. `https://github.com/uekala/automationscheck` als Kategorie **Integration** hinzufügen
 3. **Automationscheck** installieren und Home Assistant neu starten
 4. Einstellungen → Geräte & Dienste → **Integration hinzufügen** → Automationscheck
+
+Updates erscheinen danach unter Einstellungen → **Updates**.
 
 ## Wann geprüft wird
 
@@ -84,7 +97,7 @@ python -m engine.cli export.json --options optionen.json
 
 1. Änderungen im Abschnitt „Unveröffentlicht“ von [`CHANGELOG.md`](CHANGELOG.md) unter einer neuen Versionsüberschrift `## x.y.z – Datum` zusammenfassen.
 2. Dieselbe Version in `custom_components/automationscheck/manifest.json` eintragen; `python tools/check_versions.py` prüft, dass beide übereinstimmen.
-3. Nach grüner CI auf `main` einen Tag `vx.y.z` und ein GitHub-Release mit dem Changelog-Abschnitt anlegen. HACS bietet das Update danach an.
+3. Nach grüner CI auf `main` einen Tag `vx.y.z` und ein GitHub-Release mit dem Changelog-Abschnitt anlegen. Marketplace und HACS bieten das Update danach an. Ein Release, das als Vorabversion markiert ist, sehen dort nur Nutzer, die Vorabversionen eingeschaltet haben.
 
 ---
 
