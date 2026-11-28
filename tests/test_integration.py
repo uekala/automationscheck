@@ -267,3 +267,27 @@ async def test_remove_entry_deletes_repairs(hass: HomeAssistant) -> None:
     assert await hass.config_entries.async_remove(entry.entry_id)
     await hass.async_block_till_done()
     assert _issues(hass) == {}
+
+
+async def test_repair_links_to_editor(hass: HomeAssistant) -> None:
+    hass.config.language = "de"
+    await _setup_home(hass, [SELF_TRIGGER])
+    await _setup_entry(hass, show_notes=True)
+
+    (issue,) = _issues(hass).values()
+    assert (
+        issue.translation_placeholders["open"]
+        == "\n\nÖffnen: [Umschalter](/config/automation/edit/toggle)"
+    )
+
+
+async def test_situation_without_condition_is_spelled_out(hass: HomeAssistant) -> None:
+    from custom_components.automationscheck.checker import placeholders
+    from custom_components.automationscheck.engine import WARNING, Finding
+
+    finding = Finding(
+        kind="conflict", severity=WARNING, units=["automation.a"], placeholders={"situation": "–"}
+    )
+    assert placeholders(finding, language="en")["situation"] == "always – no further condition"
+    assert placeholders(finding, language="de-DE")["situation"] == "immer – keine weitere Bedingung"
+    assert placeholders(finding)["open"] == ""

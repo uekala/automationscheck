@@ -43,6 +43,8 @@ class CheckResult:
     skipped: list[str]
     finished: datetime
     names: dict[str, str] = field(default_factory=dict)
+    # Editor-Pfad je Entität, nur wenn sich die Automation in der Oberfläche bearbeiten lässt.
+    edit: dict[str, str] = field(default_factory=dict)
 
     def shown(self, show_notes: bool) -> list[Finding]:
         levels = {ERROR, WARNING} | ({NOTE} if show_notes else set())
@@ -154,6 +156,7 @@ class AutomationsCheck:
     async def _async_collect(self) -> tuple[list[Unit], dict[str, frozenset[str]], list[str]]:
         units: dict[str, Unit] = {}
         skipped: list[str] = []
+        self._edit = {}
         for kind in ("automation", "script"):
             component = self.hass.data.get(kind)
             entities = list(getattr(component, "entities", []) or [])
@@ -171,6 +174,9 @@ class AutomationsCheck:
                     if config is None:
                         skipped.append(name)
                         continue
+                path = _editor_path(kind, entity, raw)
+                if path:
+                    self._edit[entity.entity_id] = path
                 try:
                     units[entity.entity_id] = build_unit(entity.entity_id, name, kind, config)
                 except Exception as err:  # unbekannte Schreibweise: auslassen statt abbrechen
@@ -194,6 +200,7 @@ class AutomationsCheck:
             skipped=sorted(skipped),
             finished=dt_util.utcnow(),
             names={u.entity_id: u.name for u in units},
+            edit=dict(getattr(self, "_edit", {})),
         )
         self.result = result
         self._sync_issues(result)
@@ -221,12 +228,43 @@ class AutomationsCheck:
                     else ir.IssueSeverity.WARNING
                 ),
                 translation_key=finding.kind,
-                translation_placeholders=placeholders(finding),
+                translation_placeholders=placeholders(
+                    finding, result.names, result.edit, self.hass.config.language
+                ),
             )
 
 
-def placeholders(finding: Finding) -> dict[str, str]:
+_OPEN = {"de": "Öffnen", "en": "Open"}
+_ALWAYS = {"de": "immer – keine weitere Bedingung", "en": "always – no further condition"}
+
+
+def _editor_path(kind: str, entity: Any, raw: dict[str, Any]) -> str | None:
+    """Pfad zum Editor in Home Assistant, falls die Automation dort bearbeitbar ist."""
+    if kind == "automation":
+        # Nur Automationen mit „id“ (aus automations.yaml) öffnet der Editor.
+        auto_id = raw.get("id")
+        return (
+            f"/config/automation/edit/{auto_id}" if isinstance(auto_id, str) and auto_id else None
+        )
+    object_id = entity.entity_id.split(".", 1)[1]
+    return f"/config/script/edit/{object_id}"
+
+
+def placeholders(
+    finding: Finding,
+    names: dict[str, str] | None = None,
+    edit: dict[str, str] | None = None,
+    language: str | None = None,
+) -> dict[str, str]:
     """Alle Platzhalter, die die Übersetzungen der Reparaturen erwarten."""
+    lang = "de" if (language or "").lower().startswith("de") else "en"
+    names = names or {}
+    edit = edit or {}
+    links = [
+        f"[{names.get(unit, unit)}]({edit[unit]})"
+        for unit in dict.fromkeys(finding.units)
+        if unit in edit
+    ]
     values = {
         "automation": "",
         "automations": "",
@@ -240,8 +278,12 @@ def placeholders(finding: Finding) -> dict[str, str]:
         "ids": "",
         "defined": "",
         "lines": "\n".join(f"- {line}" for line in finding.lines) or "–",
+        # Direkt zur Automation springen statt sie in der Liste zu suchen.
+        "open": f"\n\n{_OPEN[lang]}: " + " · ".join(links) if links else "",
     }
     values.update(finding.placeholders)
+    if values.get("situation") in ("", "–"):
+        values["situation"] = _ALWAYS[lang]
     return values
 
 

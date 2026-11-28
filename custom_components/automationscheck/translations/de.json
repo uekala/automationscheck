@@ -47,23 +47,23 @@
   "issues": {
     "conflict": {
       "title": "Gegenspieler: {automation_a} und {automation_b}",
-      "description": "**{automation_a}** setzt `{entity}` auf **{value_a}**, **{automation_b}** im selben Moment auf **{value_b}**.\n\nGemeinsamer Auslöser: {trigger}\nSituation: {situation}\n\nWelche Aktion gewinnt, hängt von der Reihenfolge ab. Ergänze eine Bedingung, damit in dieser Situation nur eine der beiden handelt, oder lege die Logik in einer Automation zusammen."
+      "description": "**{automation_a}** setzt `{entity}` auf **{value_a}**, **{automation_b}** im selben Moment auf **{value_b}**.\n\nGemeinsamer Auslöser: {trigger}\nSituation: {situation}\n\nWelche Aktion gewinnt, hängt von der Reihenfolge ab. Ergänze eine Bedingung, damit in dieser Situation nur eine der beiden handelt, oder lege die Logik in einer Automation zusammen.{open}"
     },
     "loop": {
       "title": "Schleife: {automations}",
-      "description": "Diese Automationen können sich gegenseitig immer wieder auslösen:\n\n{lines}\n\nPrüfe, ob eine Bedingung die Kette unterbricht – zum Beispiel nur handeln, wenn der Zielzustand noch nicht erreicht ist."
+      "description": "Diese Automationen können sich gegenseitig immer wieder auslösen:\n\n{lines}\n\nPrüfe, ob eine Bedingung die Kette unterbricht – zum Beispiel nur handeln, wenn der Zielzustand noch nicht erreicht ist.{open}"
     },
     "self_trigger": {
       "title": "Selbstauslösung: {automation}",
-      "description": "**{automation}** verändert eine Entität, auf die sie selbst lauscht, und kann sich dadurch erneut auslösen:\n\n{lines}\n\nEine Bedingung wie „nur wenn der Zustand noch nicht stimmt“ oder ein `to:` im Auslöser verhindert die Wiederholung."
+      "description": "**{automation}** verändert eine Entität, auf die sie selbst lauscht, und kann sich dadurch erneut auslösen:\n\n{lines}\n\nEine Bedingung wie „nur wenn der Zustand noch nicht stimmt“ oder ein `to:` im Auslöser verhindert die Wiederholung.{open}"
     },
     "unknown_trigger_id": {
       "title": "Unbekannte Trigger-ID in {automation}",
-      "description": "Eine Bedingung in **{automation}** prüft die Trigger-ID **{ids}**, die es dort nicht gibt (vorhanden: {defined}). Der zugehörige Zweig wird nie ausgeführt.\n\nPasse die ID im Auslöser oder in der Bedingung an."
+      "description": "Eine Bedingung in **{automation}** prüft die Trigger-ID **{ids}**, die es dort nicht gibt (vorhanden: {defined}). Der zugehörige Zweig wird nie ausgeführt.\n\nPasse die ID im Auslöser oder in der Bedingung an.{open}"
     },
     "idle_trigger": {
       "title": "Auslöser ohne Wirkung in {automation}",
-      "description": "**{automation}** startet bei diesen Auslösern, aber kein Zweig reagiert darauf: **{ids}**.\n\nEntferne die Auslöser oder ergänze einen passenden Zweig."
+      "description": "**{automation}** startet bei diesen Auslösern, aber kein Zweig reagiert darauf: **{ids}**.\n\nEntferne die Auslöser oder ergänze einen passenden Zweig.{open}"
     }
   }
 }
