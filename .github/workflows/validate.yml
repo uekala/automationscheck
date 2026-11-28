@@ -12,13 +12,13 @@ jobs:
   hassfest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: home-assistant/actions/hassfest@master
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: home-assistant/actions/hassfest@9e9565e68f5a70d874202871f4c4064d23814235 # master
 
   hacs:
     runs-on: ubuntu-latest
     steps:
-      - uses: hacs/action@main
+      - uses: hacs/action@1ebf01c408f29afcb6406bd431bc98fd8cbb15aa # main
         with:
           category: integration
           ignore: brands
@@ -31,8 +31,8 @@ jobs:
         # 3.13 prüft gegen Home Assistant 2026.2, 3.14 gegen das aktuelle Home Assistant
         python-version: ["3.13", "3.14"]
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -r requirements_test.txt ruff
