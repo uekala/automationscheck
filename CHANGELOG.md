@@ -6,6 +6,8 @@ Alle nennenswerten Änderungen an Automationscheck. Versionen folgen [Semantic V
 
 ### Geändert
 
+- Reparaturen: Jede Meldung endet mit „Öffnen:“ und Links direkt in den Editor der beteiligten Automationen und Skripte (nur für Automationen mit `id`, die der Editor öffnen kann).
+- Gegenspieler ohne einschränkende Bedingung zeigen „Situation: immer – keine weitere Bedingung“ statt „Situation: –“.
 - README: Installation über den Marketplace beschrieben, der ab Home Assistant 2026.11 HACS ersetzt.
 
 ### Tests
